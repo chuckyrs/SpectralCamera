@@ -21,7 +21,7 @@
 title: Jetson Nano Spectral Camera
 #email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Based on NVIDIA''s nvgstcapture-1.0, this C/C++ application extends nvgstcapture-1.0 with a
+  Based on NVIDIA's nvgstcapture-1.0, this C/C++ application extends nvgstcapture-1.0 with a
   GStreamer branch to feed a Contrast Detection Autofocus (CDAF) routine for Arducam IMX219 image
   sensors with the motorized lens. This allows the IMX219 image sensor to be used at close range.
   GLib C++ classes are demonstrated for easy control of GPIO hardware interfaces.
