@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/chuck/Projects/nvgstcapture-modified/**",
+                "${workspaceFolder}/additions/include",
                 "/usr/include",
                 "/usr/include/gstreamer-1.0",
                 "/usr/include/glib-2.0",

@@ -3,16 +3,16 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "Build JetsonNanoMaps library",
+            "label": "Build JetsonNanoMaps object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/JetsonNanoMaps.cpp",
+                "${workspaceFolder}/additions/src/JetsonNanoMaps.cpp",
                 "-c",
                 "-o",
                 "${workspaceFolder}/build/JetsonNanoMaps.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"        
@@ -31,16 +31,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build ErrorHandler library",
+            "label": "Build ErrorHandler object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/ErrorHandler.cpp",
+                "${workspaceFolder}/additions/src/ErrorHandler.cpp",
                 "-c",
                 "-o",
                 "${workspaceFolder}/build/ErrorHandler.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"        
@@ -59,16 +59,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build JetsonNanoGPIO library",
+            "label": "Build JetsonNanoGPIO object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/JetsonNanoGPIO.cpp",
+                "${workspaceFolder}/additions/src/JetsonNanoGPIO.cpp",
                 "-c",
                 "-o",
                 "${workspaceFolder}/build/JetsonNanoGPIO.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"
@@ -87,16 +87,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build I2CsetFocus library",
+            "label": "Build I2CsetFocus object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/I2CsetFocus.cpp",
+                "${workspaceFolder}/additions/src/I2CsetFocus.cpp",
                 "-c",
                 "-o",                
                 "${workspaceFolder}/build/I2CsetFocus.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"
                 
@@ -116,16 +116,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build SerialIO library",
+            "label": "Build SerialIO object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/SerialIO.cpp",
+                "${workspaceFolder}/additions/src/SerialIO.cpp",
                 "-c",
                 "-o",
                 "${workspaceFolder}/build/SerialIO.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
@@ -144,16 +144,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build OutputFileControl library",
+            "label": "Build OutputFileControl object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",                
                 "-g",
-                "${workspaceFolder}/Additions/src/OutputFileControl.cpp",
+                "${workspaceFolder}/additions/src/OutputFileControl.cpp",
                 "-c",
                 "-o",                
                 "${workspaceFolder}/build/OutputFileControl.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"        
@@ -172,16 +172,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build amsAS7265x library",
+            "label": "Build amsAS7265x object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/amsAS7265x.cpp",
+                "${workspaceFolder}/additions/src/amsAS7265x.cpp",
                 "-c",
                 "-o",
                 "${workspaceFolder}/build/amsAS7265x.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",               
+                "-I${workspaceFolder}/additions/include",               
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
@@ -200,16 +200,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build SysCtrl library",
+            "label": "Build SysCtrl object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/SysCtrl.cpp",
+                "${workspaceFolder}/additions/src/SysCtrl.cpp",
                 "-c",
                 "-o",                
                 "${workspaceFolder}/build/SysCtrl.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"        
@@ -228,16 +228,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build CDAF library",
+            "label": "Build CDAF object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/cdaf.cpp",
+                "${workspaceFolder}/additions/src/cdaf.cpp",
                 "-c",
                 "-o",                
                 "${workspaceFolder}/build/cdaf.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
@@ -257,16 +257,16 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build AF_Additions library",
+            "label": "Build AF_Additions object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/AdditionsForAF.cpp",
+                "${workspaceFolder}/additions/src/AdditionsForAF.cpp",
                 "-c",
                 "-o",                
                 "${workspaceFolder}/build/AdditionsForAF.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",                
+                "-I${workspaceFolder}/additions/include",                
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
@@ -286,16 +286,16 @@
         },       
         {
             "type": "cppbuild",
-            "label": "Build AdditionsParent library",
+            "label": "Build AdditionsParent object",
             "command": "/usr/bin/g++-7",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/Additions/src/AdditionsParent.cpp",
+                "${workspaceFolder}/additions/src/AdditionsParent.cpp",
                 "-c",
                 "-o",              
                 "${workspaceFolder}/build/AdditionsParent.o",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
+                "-I${workspaceFolder}/additions/include",
                 "-I/usr/include/gstreamer-1.0",
                 "-I/usr/include/glib-2.0",
                 "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"
@@ -314,14 +314,68 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build nvgstcapture-1.0_modified application",
+            "label": "Build nvgst_x11_common object",
             "command": "/usr/bin/gcc-7",
             "args": [
-                "-c",
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/nvgstcapture-1.0/src/nvgst_x11_common.c",
+                "-c",
+                "-o",              
+                "${workspaceFolder}/build/nvgst_x11_common.o",
+                "-I${workspaceFolder}/nvgstcapture-1.0/include",
+                "-I/usr/include/gstreamer-1.0",
+                "-I/usr/include/glib-2.0",
+                "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task generated by Debugger."
+        },
+        {
+            "type": "cppbuild",
+            "label": "Build nvgstcapture object",
+            "command": "/usr/bin/gcc-7",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
                 "${workspaceFolder}/nvgstcapture-1.0/src/nvgstcapture.c",
+                "-c",
+                "-o",              
+                "${workspaceFolder}/build/nvgstcapture.o",
+                "-I${workspaceFolder}/nvgstcapture-1.0/include",
+                "-I${workspaceFolder}/additions/include",
+                "-I/usr/include/gstreamer-1.0",
+                "-I/usr/include/glib-2.0",
+                "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Task generated by Debugger."
+        },
+        {
+            "type": "cppbuild",
+            "label": "Build spectralCam application",
+            "command": "/usr/bin/gcc-7",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
                 "${workspaceFolder}/build/JetsonNanoMaps.o",
                 "${workspaceFolder}/build/ErrorHandler.o",
                 "${workspaceFolder}/build/OutputFileControl.o",
@@ -333,31 +387,10 @@
                 "${workspaceFolder}/build/cdaf.o",
                 "${workspaceFolder}/build/AdditionsForAF.o",
                 "${workspaceFolder}/build/AdditionsParent.o",
+                "${workspaceFolder}/build/nvgst_x11_common.o",
+                "${workspaceFolder}/build/nvgstcapture.o",
                 "-o",
-                "${workspaceFolder}/application/spectral",                
-                "-pthread",
-                "-I/usr/include",
-                "-I/home/chuck/Projects/nvgstcapture-modified/nvgstcapture-1.0/include",
-                "-I/home/chuck/Projects/nvgstcapture-modified/Additions/include",
-                "-I/usr/include/gstreamer-1.0",                               
-                "-I/usr/include/orc-0.4",                
-                "-I/usr/include/at-spi2-atk/2.0",
-                "-I/usr/include/at-spi-2.0",
-                "-I/usr/include/dbus-1.0",
-                "-I/usr/lib/aarch64-linux-gnu/dbus-1.0/include",
-                "-I/usr/include/gtk-3.0",
-                "-I/usr/include/gio-unix-2.0/",
-                "-I/usr/include/cairo",
-                "-I/usr/include/pango-1.0",
-                "-I/usr/include/harfbuzz",
-                "-I/usr/include/atk-1.0",
-                "-I/usr/include/pixman-1",
-                "-I/usr/include/freetype2",
-                "-I/usr/include/libpng16",
-                "-I/usr/include/gdk-pixbuf-2.0",
-                "-I/usr/include/glib-2.0",
-                "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
-                "-I/usr/include/opencv4",
+                "${workspaceFolder}/application/spectralcam",                
                 "-lopencv_core",
                 "-lopencv_imgproc",
                 "-lopencv_highgui",
@@ -375,7 +408,7 @@
                 "-lgio-2.0",
                 "-lgobject-2.0",
                 "-lgstpbutils-1.0",
-                "-lgstaudio-1.0 ",
+                "-lgstaudio-1.0",
                 "-lX11",
                 "-lXext",
                 "-lgstvideo-1.0",
@@ -412,26 +445,44 @@
             "${workspaceFolder}/build/cdaf.o",
             "${workspaceFolder}/build/AdditionsForAF.o",
             "${workspaceFolder}/build/amsAS7265x.o",
-            "${workspaceFolder}/build/AdditionsParent.o"            ],
+            "${workspaceFolder}/build/AdditionsParent.o",
+            "${workspaceFolder}/build/nvgst_x11_common.o",
+            "${workspaceFolder}/build/nvgstcapture.o",
+            "${workspaceFolder}/application/spectralcam"],
             "problemMatcher": []
-        },            
+        },
+        {
+            "label": "Build Objects",
+            "type": "shell",
+            "command": "",
+            "dependsOn": [  "Build JetsonNanoMaps object",
+                            "Build ErrorHandler object",
+                            "Build JetsonNanoGPIO object",
+                            "Build I2CsetFocus object",
+                            "Build SerialIO object",
+                            "Build OutputFileControl object",
+                            "Build amsAS7265x object",
+                            "Build SysCtrl object",
+                            "Build CDAF object",
+                            "Build AF_Additions object",
+                            "Build AdditionsParent object", 
+                            "Build nvgst_x11_common object",
+                            "Build nvgstcapture object"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        },           
           
         {
             "label": "Build All",
             "type": "shell",
             "command": "",
-            "dependsOn": [  "Build JetsonNanoMaps library",
-                            "Build ErrorHandler library",
-                            "Build JetsonNanoGPIO library",
-                            "Build I2CsetFocus library",
-                            "Build SerialIO library",
-                            "Build OutputFileControl library",
-                            "Build amsAS7265x library",
-                            "Build SysCtrl library",
-                            "Build CDAF library",
-                            "Build AF_Additions library",
-                            "Build AdditionsParent library", 
-                            "Build nvgstcapture-1.0_modified application"],
+            "dependsOn": ["Build Objects",
+                        "Build spectralCam application"                            
+                        ],
+            "dependsOrder": "sequence",
             "group": {
                 "kind": "build",
                 "isDefault": true
