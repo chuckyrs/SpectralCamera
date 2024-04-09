@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/chuck/Projects/nvgstcapture-modified/**",
+                "/usr/include",
+                "/usr/include/gstreamer-1.0",
+                "/usr/include/glib-2.0",
+                "/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+                "/usr/include/gtk-3.0",
+                "/usr/include/at-spi2-atk/2.0",
+                "/usr/include/at-spi-2.0",
+                "/usr/include/dbus-1.0",
+                "/usr/lib/aarch64-linux-gnu/dbus-1.0/include",
+                "/usr/include/gio-unix-2.0/",
+                "/usr/include/cairo",
+                "/usr/include/pango-1.0",
+                "/usr/include/harfbuzz",
+                "/usr/include/pango-1.0",
+                "/usr/include/atk-1.0",
+                "/usr/include/pixman-1",
+                "/usr/include/freetype2",
+                "/usr/include/libpng16",
+                "/usr/include/gdk-pixbuf-2.0",
+                "/usr/include/glib-2.0",
+                "/usr/include/opencv4",
+                "/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+                "/usr/include/c++/7"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "gnu11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "linux-gcc-arm64"
+        }
+    ],
+    "version": 4
+}
