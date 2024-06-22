@@ -1,3 +1,23 @@
+/*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files(the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and /or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions :
+*
+*The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
 #include <sys/stat.h>
 #include <sstream>
 #include <iomanip>
@@ -76,10 +96,7 @@ gint SysCtrl::setup(GError** error) {
 void SysCtrl::run_ams7265xHandshake() {
     as7265x_unit_.getHandshakeData();
 }
-/*
-gboolean Init_Additions::myCallback(gpointer user_data) {
-    Init_Additions* self = static_cast<Init_Additions*>(user_data);
-*/
+
 gboolean SysCtrl::GPIO_LightsOutWrapper(gpointer user_data) {
         return reinterpret_cast<SysCtrl*>(user_data)->GPIO_LightsOut(user_data);
 }
@@ -140,8 +157,6 @@ void SysCtrl::GPIO_InputPinChange() {
     g_timeout_add_full(G_PRIORITY_DEFAULT, 4000, GPIO_AmbientOnWrapper, this, nullptr);
     g_timeout_add_full(G_PRIORITY_DEFAULT, 4000, additions_parent_->af_iface_.releaseFocusLockWrapper,
         &additions_parent_->af_iface_, nullptr);
-    /*g_timeout_add_full(G_PRIORITY_DEFAULT, 3200, self->additions_parent_->timeoutTriggerCallback,
-    self->additions_parent_, nullptr);*/
     g_timeout_add_full(G_PRIORITY_DEFAULT, 200, GPIO_FlashOnWrapper, this, nullptr);
     g_timeout_add_full(G_PRIORITY_DEFAULT, 3600, as7265x_unit_.getAS7265xDataWrapper,
     &as7265x_unit_, nullptr);

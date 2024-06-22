@@ -1,3 +1,23 @@
+/*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files(the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and /or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions :
+*
+*The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
 #include <algorithm> // for std::max_element and std::min_element
 #include <cmath>
 
@@ -17,7 +37,6 @@ CDAF::CDAF(AF_Additions* AF_interface, ErrorHandler* error_handler) :
     g_print ("...autofocus CDAF control algorithm\n"); 
 }
 
-//CDAF::~CDAF() = default;
 CDAF::~CDAF(){
     if(currentState_) 
             delete currentState_;
@@ -62,7 +81,7 @@ void TransitState::runFocus(CDAF & cdaf) {
     cdaf.setScanning(FALSE, 250);
 
     if (std::abs(travelRemaining) > TRANSIT_STEP){
-        g_print("TRAVEL REMAINAING :%d\n", travelRemaining);
+        g_print("TRAVEL REMAINING :%d\n", travelRemaining);
         if (travelRemaining > 0)
             cdaf.focusIndex = cdaf.focusIndex + TRANSIT_STEP;
         else
