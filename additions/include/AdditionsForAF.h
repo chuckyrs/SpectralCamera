@@ -3,8 +3,7 @@
 
 #include <gst/gst.h>
 #include <glib.h>
-//#include "I2CsetFocus.h"
-//#include "AF_Algorithm.h"
+
 #include "cdaf.h"
 
 class ErrorHandler;
@@ -19,10 +18,6 @@ public:
     gboolean setFocusLock();
     void focusAchieved();
     void setScanning (gboolean value, guint timeout);
-    /*static gboolean focusImageCapturedWrapper(GstElement* fsink,
-    GstBuffer* buffer, GstPad* pad, gpointer user_data);*/
-
-    //static gboolean finishOffSetupWrapper(gpointer user_data);
     static gboolean releaseFocusLockWrapper(gpointer user_data);
     static gboolean focusTriggerWrapper(gpointer user_data);
     static gboolean runFocusWrapper(gpointer user_data);

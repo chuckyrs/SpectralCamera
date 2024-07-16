@@ -1,3 +1,23 @@
+/*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files(the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and /or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions :
+*
+*The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
 #ifndef SERIALIO_H
 #define SERIALIO_H
 
@@ -59,15 +79,11 @@ private:
     guint flow_control_;          // 0 : None, 1 : Xon/Xoff, 2 : RTS/CTS, 3 : RS485halfduplex
     gboolean disable_port_lock_;
 
-    std::function<void(const std::string&)> writeFunc_;// = NULL;
-    // Static method
+    std::function<void(const std::string&)> writeFunc_;
     static gboolean listenPortStatic(GIOChannel* src, GIOCondition cond, gpointer data);
     gboolean listenPort(GIOChannel* src, GIOCondition cond, gpointer data);
-
-    // Static method
     static gboolean ioErrStatic(GIOChannel* src, GIOCondition cond, gpointer data);
     gboolean ioErr(GIOChannel* src, GIOCondition cond, gpointer data);
-
     gint configurePort(GError** error);
     void closePort();
     void writeCharsToFunc(const std::string& output_chars);

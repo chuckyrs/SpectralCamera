@@ -1,3 +1,23 @@
+/*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files(the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and /or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions :
+*
+*The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
 #include <algorithm> // for std::max_element and std::min_element
 #include <cmath>
 
@@ -5,6 +25,13 @@
 #include "AdditionsForAF.h"
 #include "ErrorHandler.h"
 
+/**
+ * Constructs a CDAF object associated with a specific camera. This class
+ * contains the Auto Focus Finite State Machine for AF functionality.
+ *
+ * @param * AF_interface : Pointer to the overhead AF_Interface object
+ * @param * error_handler : Pointer to the application's error_handler object
+ */
 CDAF::CDAF(AF_Additions* AF_interface, ErrorHandler* error_handler) : 
     my_AF_interface_(AF_interface),
     error_handler_(error_handler),
@@ -17,18 +44,77 @@ CDAF::CDAF(AF_Additions* AF_interface, ErrorHandler* error_handler) :
     g_print ("...autofocus CDAF control algorithm\n"); 
 }
 
-//CDAF::~CDAF() = default;
+/**
+ * Destructor for CDAF. Cleans up by closing the I2C device if it's open and logs the shutdown.
+ */
 CDAF::~CDAF(){
     if(currentState_) 
             delete currentState_;
      g_print("CDAF autofocus algorithm shutdown...\n");
 }
 
+/**
+ * Setup for SysCtrl. Part of the heirachial setup chain that occurs
+ * only after the camera has come online.
+ *
+ * @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+ *
+ * @return : pass through the result of the i2c_focus_controller setup.
+ */
 gint CDAF::setup(GError** error){
     return i2c_focus_controller_.setup(error);
 }
 
-//These can be modified to pass the error pointer through
+/**
+ * Calls the i2c focus interface to set the camera to the focus point in focus_index.
+ *
+ * @param focus_index : The focus point to set the lens to
+ * @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+ *
+ * @return : pass through the result of the i2c_focus_controller_.setFocus.
+ */
+gint CDAF::setFocus(guint focus_index, GError** error) {
+    return i2c_focus_controller_.setFocus(focus_index, error);
+}
+
+/**
+ * This runs the focusAchieved method of the AF_Interface class
+ * to signal that focus has been achieved.
+ */
+void CDAF::focusAchieved(){
+    my_AF_interface_->focusAchieved();
+}
+
+/**
+ * Identify whether the Finite State Machine is scanning for the best focus point.
+ *
+ * @param value : TRUE or FALSE. The camera is scanning for focus or it isn't.
+ * @param timeout : How long to wait between grabbing focus frames.
+ */
+void CDAF::setScanning(gboolean value, guint timeout){
+    my_AF_interface_->setScanning(value, timeout);
+}
+
+/***runFocus Finite State Machine beneath this line**********/
+
+/**
+* Sets the currentState pointer as a critical function of the runFocus 
+* Finite State Machine.
+* 
+* @param newState : The state to switch the state machine to.
+*/
+void CDAF::changeState(FocusState* newState) {
+    delete currentState_;
+    currentState_ = newState;
+    g_print("AF CHANGED STATE\n");
+}
+
+/**
+* Entry point to run the runFocus statemachine. This uses the currentState_ property
+* to point to the active state machine class.
+*
+* @param focus_value : The most recently acquired focus value from the laPlacian algorithm.
+*/
 void CDAF::runFocus(gfloat focus_value) {
     GError* error = nullptr;
     focusValue = focus_value; //Give the focus machine the latest focus value to work with
@@ -37,32 +123,17 @@ void CDAF::runFocus(gfloat focus_value) {
         error_handler_->errorHandler(&error);
 }
 
-//Pass the error pointer through
-gint CDAF::setFocus(guint focus_index, GError** error) {
-    return i2c_focus_controller_.setFocus(focus_index, error);
-}
-
-void CDAF::changeState(FocusState* newState) {
-        delete currentState_;
-        currentState_ = newState;
-        g_print("AF CHANGED STATE\n");
-}
-
-void CDAF::focusAchieved(){
-    my_AF_interface_->focusAchieved();
-}
-
-void CDAF::setScanning(gboolean value, guint timeout){
-    my_AF_interface_->setScanning(value, timeout);
-}
-
+/**
+* The TransitState class smoothly transitions the camera lens to its next
+* scanning start point.
+*/
 void TransitState::runFocus(CDAF & cdaf) {
     //This sets the parameters to start scanning in
     gint travelRemaining = cdaf.transitTo - cdaf.focusIndex;
     cdaf.setScanning(FALSE, 250);
 
     if (std::abs(travelRemaining) > TRANSIT_STEP){
-        g_print("TRAVEL REMAINAING :%d\n", travelRemaining);
+        g_print("TRAVEL REMAINING :%d\n", travelRemaining);
         if (travelRemaining > 0)
             cdaf.focusIndex = cdaf.focusIndex + TRANSIT_STEP;
         else
@@ -84,6 +155,9 @@ void TransitState::runFocus(CDAF & cdaf) {
     }  
 }
 
+/**
+* The StartScanFocusInState class prepares settings to start a new scan in.
+*/
 void StartScanFocusInState::runFocus(CDAF & cdaf) {
     //This sets the parameters to start scanning in
     cdaf.scanInValues.clear();
@@ -99,6 +173,9 @@ void StartScanFocusInState::runFocus(CDAF & cdaf) {
     
 }
 
+/**
+* The ScanFocusInState class builds an array of focus values while scanning in.
+*/
 void ScanFocusInState::runFocus(CDAF & cdaf) {
     
     cdaf.scanInValues.push_back(cdaf.focusValue);
@@ -120,6 +197,9 @@ void ScanFocusInState::runFocus(CDAF & cdaf) {
     }
 }
 
+/**
+* The StartScanFocusOutState class prepares settings to start a new scan outwards.
+*/
 void StartScanFocusOutState::runFocus(CDAF & cdaf) {
      //This sets the parameters to start scanning in
     cdaf.scanOutValues.clear();
@@ -134,6 +214,9 @@ void StartScanFocusOutState::runFocus(CDAF & cdaf) {
     cdaf.changeState(new ScanFocusOutState());
 }
 
+/**
+* The ScanFocusOutState class builds an array of focus values while scanning out.
+*/
 void ScanFocusOutState::runFocus(CDAF & cdaf) {
     
     cdaf.scanOutValues.push_back(cdaf.focusValue);
@@ -165,6 +248,10 @@ void ScanFocusOutState::runFocus(CDAF & cdaf) {
     }
 }
 
+/**
+* The StartDetailScanState class prepares settings to start a detailed small-step scan
+* around the previously best focus value identified.
+*/
 void StartDetailScanState::runFocus(CDAF & cdaf) {
     
     cdaf.scanInValues.clear();
@@ -183,6 +270,11 @@ void StartDetailScanState::runFocus(CDAF & cdaf) {
     //g_print("END SCAN FOCUS SET\n");
 }
 
+/**
+* The DetailScanState class builds an array of focus values while
+* performing a detailed small-step scan around the previously best
+* focus value identified.
+*/
 void DetailScanState::runFocus(CDAF & cdaf) {
     
     cdaf.scanInValues.push_back(cdaf.focusValue);
@@ -205,6 +297,9 @@ void DetailScanState::runFocus(CDAF & cdaf) {
     }     
 }
 
+/**
+* The SetFocusState class sets the lens focus to its best focus point. 
+*/
 void SetFocusState::runFocus(CDAF & cdaf) {
 
     auto max_it = std::max_element(cdaf.scanInValues.begin(), cdaf.scanInValues.end());
@@ -261,6 +356,10 @@ void SetFocusState::runFocus(CDAF & cdaf) {
           
 }
 
+/**
+* The GrabFocusValueState notifies that focus has been achieved and stops scanning
+* and sets focus frame monitoring to 250 ms intervals.
+*/
 void GrabFocusValueState::runFocus(CDAF & cdaf) {
     //Don't change the index, just grab the value
     g_print ("cdaf.focusValue: %f", cdaf.focusValue);
@@ -271,6 +370,10 @@ void GrabFocusValueState::runFocus(CDAF & cdaf) {
     cdaf.changeState(new StartDriftScanningState());
 }
 
+/**
+* The StartDriftScanningState class prepares settings to start moving the lens if the system
+* becomes out of focus.
+*/
 void StartDriftScanningState::runFocus(CDAF & cdaf) {
     cdaf.scanInValues.clear();
     cdaf.scanInIndicies.clear();
@@ -287,15 +390,18 @@ void StartDriftScanningState::runFocus(CDAF & cdaf) {
 
 }
 
+/**
+* The ConfirmDriftDirectionState class checks that the focus Value is improving over a number of steps,
+* otherwise the focus drift direction is reversed.
+*/
 void ConfirmDriftDirectionState::runFocus(CDAF & cdaf) {
     //If direction is worsening, then throw away array start
-    //fresh in sacn for peak. If improving keep until a peak is found
+    //fresh in scan for peak. If improving keep going until a peak is found
     cdaf.scanInValues.push_back(cdaf.focusValue);
     cdaf.scanInIndicies.push_back(cdaf.focusIndex);
 
     auto max_it = std::max_element(cdaf.scanInValues.begin(), cdaf.scanInValues.end());
     gboolean max_at_start = ((std::distance(cdaf.scanInValues.begin(), max_it)) <= 2);
-    //gboolean max_at_end = ((std::distance(max_it, cdaf.scanInValues.end())) == cdaf.scanInValues.size() -1);
     guint index = std::distance(max_it, cdaf.scanInValues.end());
 
     if (cdaf.scanInValues.size() >= 5 ){
@@ -320,6 +426,10 @@ void ConfirmDriftDirectionState::runFocus(CDAF & cdaf) {
     }
 }
 
+/**
+* The DriftScanForPeakState class expects that the focus value should peak before declining,
+* and the peak is the most highly focussed point.
+*/
 void DriftScanForPeakState::runFocus(CDAF & cdaf) {
     
     cdaf.scanInValues.push_back(cdaf.focusValue);
