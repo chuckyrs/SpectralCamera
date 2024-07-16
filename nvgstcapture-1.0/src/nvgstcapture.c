@@ -20,6 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+/* Modified by Charles Sutherland (2023/2024) to integrate GPIO control and Shutter Release button
+* activation of image capture.
+* 
+* Modified Functions: image_captured - Altered Output Filename
+* main - needed to create and destroy additional objects
+* Line X Added create XXXXX
+* Line X Added destroy XXXXX
+*/
+
 #include <dlfcn.h>
 #include <unistd.h>
 #include "nvgstcapture.h" 
@@ -126,13 +135,6 @@ typedef struct AuxBufferData {
   void * sensor_data;
 } AuxData;
 
-/***************************************************************
- * 
- *                   ADDITIONAL FUNCTIONS
- * 
- * *************************************************************/
-
-/*ADDITIONS PARENT*/
 AdditionsParent* additions_parent;
 
 void focus_valve_open(void){
@@ -146,21 +148,6 @@ void focus_valve_close(void){
   //drop 'TRUE' is DO drop frames
   g_object_set(app->ele.focusValve, "drop", TRUE, NULL);
 }
-
-
-/********************************************************************************
- * ******************************************************************************
- *      ORIGINAL NVGSTCAPTURE-1.0 FROM HERE DOWN
- * SOME MODIFICATIONS AS REQUIRED-
- * 
- * Modified Functions: image_captured - Altered Output Filename
- * main - needed to create and destroy additional objects
- * Line X Added create XXXXX
- * Line X Added destroy XXXXX
- * 
- * 
- * ******************************************************************************
- * *****************************************************************************/
 
 
 /**

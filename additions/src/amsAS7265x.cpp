@@ -25,9 +25,9 @@
 /**
  * Constructs an AS7265xUnit object configured with specified interfaces for communication and error handling.
  *
- * @param serial_port    : Pointer to a SerialPort object used for I2C communication with the AS7265x sensor.
- * @param file_to_write  : Pointer to an OutputFileControl object used for logging and data output.
- * @param error_handler  : Pointer to an ErrorHandler object for managing error conditions.
+ * @param serial_port : Pointer to a SerialPort object used for I2C communication with the AS7265x sensor.
+ * @param file_to_write : Pointer to an OutputFileControl object used for logging and data output.
+ * @param error_handler : Pointer to an ErrorHandler object for managing error conditions.
  */
 AS7265xUnit::AS7265xUnit(SerialPort* serial_port, OutputFileControl* file_to_write, ErrorHandler* error_handler) :
     sequence_no_(0), 
@@ -46,8 +46,14 @@ AS7265xUnit::~AS7265xUnit(){
     g_print("Nothing to do here\n"); // Indicates no explicit cleanup required (e.g., no dynamic memory allocation)
 };
 
-//This is a void function becuase there is no way to get a complete handshake before 
-//the function returns. Any error will result in shutdown anyway.
+/**
+ * Retrieves handshake data from the AS7265x device. This function abstracts the interaction process and manages errors.
+ * This is a void function becuase there is no way to get a complete handshake before
+ * the function returns. Any error will result in shutdown anyway.
+ * 
+ * @return gboolean : Always returns FALSE indicating a one-time operation per invocation.
+ */
+
 void AS7265xUnit::getHandshakeData() {
     GError* error = nullptr;
 
@@ -85,7 +91,7 @@ gboolean AS7265xUnit::getAS7265xData(void)
 /**
  * Splits a given string by a delimiter and returns the result as a vector of strings.
  *
- * @param s         : The string to split.
+ * @param s : The string to split.
  * @param delimiter : The character used as a delimiter to split the string.
  * @return std::vector<std::string> : A vector containing the split strings.
  */
@@ -152,7 +158,6 @@ void AS7265xUnit::runHandshake(GError** error)
         case 9:
             goto error;
     }
-    //g_print("%s... ", command.c_str());
 
     return;
 
@@ -169,13 +174,10 @@ void AS7265xUnit::runHandshake(GError** error)
  */
 void AS7265xUnit::runData(GError** error)
 {
-    //g_print("\nData acquisition running...\n");
     switch (sequence_no_)
     {
         case 0:
             serial_port_->setWriteFunc(std::bind(&AS7265xUnit::dataReply, this, std::placeholders::_1));
-
-            //serial_port_->setWriteFunc(dataReply);
             if ((serial_port_->sendChars(AT_SENSOR_TEMP, error)) == -1)
                 goto error;          
             break;
@@ -211,11 +213,11 @@ void AS7265xUnit::runData(GError** error)
     error_handler_->errorHandler(error);
 }
 
-// Static method
-/*void AS7265xUnit::handshakeReplyStatic(const std::string& output_data) {
-    return static_cast<AS7265xUnit*>-()>handshakeReply(output_data);
-}*/
-
+/**
+ * Conducts a multi-step handshake procedure with the AS7265x device, handling different commands in sequence.
+ *
+ * @param error : Pointer to a GError pointer, allowing error information to be updated and passed back.
+ */
 void AS7265xUnit::handshakeReply(const std::string& output_data)
 {   GError* error = nullptr;
     std::ostringstream temp_data;   
@@ -275,7 +277,7 @@ void AS7265xUnit::handshakeReply(const std::string& output_data)
 }
 
 /**
- * Conducts a multi-step handshake procedure with the AS7265x device, handling different commands in sequence.
+ * Conducts a multi-step command sequence with the AS7265x to acquire spectral readings from the device.
  *
  * @param error : Pointer to a GError pointer, allowing error information to be updated and passed back.
  */

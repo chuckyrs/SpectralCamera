@@ -18,8 +18,6 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-
-// Need to check which includes are actually required.
 #include <sys/stat.h>
 #include <sstream>
 #include <iomanip>

@@ -22,7 +22,6 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-
 #include <linux/i2c-dev.h>
 
 extern "C" { //smbus.h needs to be handled by a C compiler
@@ -85,8 +84,9 @@ gint CameraI2CDevice::setup(GError** error){
  * Sets the focus to a specific range on the camera's I2C device.
  *
  * @param range : Integer specifying the focus range value to set.
- * @param error : Double pointer to a GError structure to allow error information to be passed in and modified.
- * @return gint : Returns 0 on successful operation, -1 on failure.
+ * @param error : Pointer the nvgstcapture-1.0 error struct for error reporting
+ * 
+ *  @return : -1 on error, else 0.
  */
 gint CameraI2CDevice::setFocus(int range, GError** error) {
     __u8 byte1, byte2; // Define variables for the two parts of the I2C message

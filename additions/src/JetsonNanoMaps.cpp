@@ -20,6 +20,10 @@
 
 #include "JetsonNanoMaps.h"
 
+/**
+ * Constructs an JetsonNanoPinMap object for mapping the GPIO physical
+ * pin number to a pin offset.
+ */
 JetsonNanoPinMap::JetsonNanoPinMap() {
     pin_map_ = {
         {7, 216},
@@ -41,6 +45,14 @@ JetsonNanoPinMap::JetsonNanoPinMap() {
     };
 }
 
+/**
+ * Get the pin offset based on the pysical GPIO pin number.
+ * 
+ * @param pin_number : The GPIO physical number we need an offset for.
+ * @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+ * 
+ * @return : Pin offset value, else -1 on error.
+ */
 gint JetsonNanoPinMap::GPIO_PinNoToOffset(guint pin_number, GError** error) {
     if(pin_map_.find(pin_number) == pin_map_.end()){
         g_set_error(
@@ -54,6 +66,10 @@ gint JetsonNanoPinMap::GPIO_PinNoToOffset(guint pin_number, GError** error) {
     return pin_map_[pin_number];
 }
 
+/**
+ * Constructs an JetsonNanoDeviceMap object for mapping a device identifier
+ * to the device file.
+ */
 JetsonNanoDeviceMap::JetsonNanoDeviceMap() {
     device_map_ = {
         {"USB0", "/dev/ttyUSB0"},
@@ -67,6 +83,14 @@ JetsonNanoDeviceMap::JetsonNanoDeviceMap() {
     };
 }
 
+/**
+ * Get the device file based on a simple identifier
+ *
+ * @param identifier : The identifier we need a device file for.
+ * @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+ *
+ * @return : The device file path and name as a string.
+ */
 std::string JetsonNanoDeviceMap::identifierToDevice(const std::string &identifier, GError** error) {
     // Look up the port string using the provided identifier
     auto it = device_map_.find(identifier);

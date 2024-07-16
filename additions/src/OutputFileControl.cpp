@@ -27,16 +27,24 @@
 #include "OutputFileControl.h"
 #include "ErrorHandler.h"
 
+/**
+ * Constructs an AF_Additions object associated with a specific camera using its identifier.
+ *
+ * @param * path_root : The path to where data directories and files are to be stored
+ * @param * error_handler : Pointer to the application's error_handler object
+ *
+ */
 OutputFileControl::OutputFileControl(const std::string& path_root, ErrorHandler* error_handler):
     path_root_(path_root), output_file_channel_(nullptr), daily_dir_(""),
     data_time_(""), button_triggered_(FALSE),
     error_handler_(error_handler) {
 
         g_print("...Output file controller\n");
-
-        //g_print("OutputFileControl: %s %s", daily_dir_.c_str(), data_time_.c_str());
 }
 
+/**
+ * Destructor for OutputFileControl. Logs the shutdown process and cleans up resources.
+ */
 OutputFileControl::~OutputFileControl() {
     g_print("Shuting down output file controller\n");
     freeDataTime();
@@ -47,6 +55,14 @@ OutputFileControl::~OutputFileControl() {
     g_print("Output file closed\n");
 }
 
+/**
+ * Setup for OutputFileControl. Part of the heirachial setup chain that occurs
+ * only after the camera has come online.
+ *
+ * @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+ *
+ * @return : -1 on error, else 0.
+ */
 gint OutputFileControl::setup(GError** error) {
 
     createDailyDir();    
@@ -76,6 +92,14 @@ gint OutputFileControl::setup(GError** error) {
     return 0;
 }
 
+/**
+* Writes a string of data to the currently open file.
+* 
+* @param data : The string data to write to the file.
+* @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+* 
+* @return : -1 on error, otherwise the number of bytes written
+*/
 gint OutputFileControl::writeLineToFile(const std::string& data, GError** error) {
     std::size_t bytes_written = 0;
     std::string data_with_linefeed = data + static_cast<char>(LINE_FEED);
@@ -113,8 +137,14 @@ gint OutputFileControl::writeLineToFile(const std::string& data, GError** error)
     return bytes_written;
 }
 
-
-
+/**
+* This method is tied to the use of this camera and it makes a sequence of files oreder by their
+* capture sequence. The number of the image capture aligns with the spectral data capture.
+* 
+* @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+* 
+* @return : -1 on error, otherwise the number of bytes written
+*/
 std::string OutputFileControl::getNextFilename(GError **error) {
     int max_num = -1;
 
@@ -164,7 +194,10 @@ std::string OutputFileControl::getNextFilename(GError **error) {
     return next_filename.str();
 }
 
-
+/**
+* Captures the button press time for use in writing to files.
+* The OutputFileControl private class property data_time_ is set by this method.
+*/
 void OutputFileControl::captureDataTime() {
     std::ostringstream temp_string;    
     
@@ -181,15 +214,32 @@ void OutputFileControl::captureDataTime() {
     data_time_ = temp_string.str();
 }
 
+/**
+* Write the time data capture commenced to the file
+* @param error : Pointer to the nvgstcapture-1.0 error struct for error reporting
+* 
+* @return : pass through from writeLineToFile()
+*/
 gint OutputFileControl::writeDataFileTime(GError** error) {
 
     return writeLineToFile(data_time_, error);
 }
 
+/**
+* The OutputFileControl private class property button_triggered_ is set by this method.
+* This allows us to track whether image capture was button activated, in which case spectral
+* data is collected as well. Or whether the system was command activated, only capturing an image.
+*/
 void OutputFileControl::setButtonTriggered() {
     button_triggered_= TRUE;
 }
 
+/**
+* Sets the image capture filename to the time of capture with a .jpg extension
+* @ param outfile : This is a pointer to the filename buffer in nvgstcapture-1.0. We overwrite the
+*                   default filename with the time of capture when image capture is triggered by the 
+*                   button press.
+*/
 void OutputFileControl::getImageFileName(char* outfile) {
     std::ostringstream temp_string;
 
@@ -206,20 +256,18 @@ void OutputFileControl::getImageFileName(char* outfile) {
     }
 }
 
+/**
+* The OutputFileControl private class property data_time_ is cleared by this method.
+*/
 void OutputFileControl::freeDataTime() {
     data_time_.clear();
 }
 
-/*std::string OutputFileControl::getDataTime() {
-
-    if (!data_time.empty())
-        return data_time;
-    /*else
-    * {
-    * ERROR HERE
-    * }
-}*/
-
+/**
+* Create a daily directory to store today's data
+* 
+* The private property daily_dir_ is set by this method
+*/
 void OutputFileControl::createDailyDir() {
     time_t T = time(NULL);
     struct tm tm = *localtime(&T);
@@ -241,6 +289,9 @@ void OutputFileControl::createDailyDir() {
     }
 }
 
+/**
+* The OutputFileControl private class property daily_dir_ is cleared by this method.
+*/
 void OutputFileControl::freeDailyDir() {
     daily_dir_.clear();
 }

@@ -22,6 +22,19 @@
 #include "JetsonNanoMaps.h"
 #include "ErrorHandler.h"
 
+/**
+ * Constructs a SerialIO object associated with a serial port.
+ * This handles sending and receivijng data at the port.
+ *
+ * @param port_id : The UART port to associte with this object.
+ * @param baud : Port baud rate setting
+ * @param bits : Port no. of bits setting
+ * @param stopBits : Port no. of stop bits setting
+ * @param parity : Port parity setting
+ * @param flowControl : Port flow control setting
+ * @param * error_handler : Pointer to the application's error_handler object
+ * 
+ */
 SerialPort::SerialPort(const std::string& port_id, guint baud, guint bits, guint stopBits,
     guint parity, guint flowControl, ErrorHandler* error_handler)
     : port_(port_id), baud_(baud), bits_(bits), stop_bits_(stopBits),parity_(parity),
@@ -32,12 +45,22 @@ SerialPort::SerialPort(const std::string& port_id, guint baud, guint bits, guint
     g_print ("...Serial port controller on %s\n", port_id.c_str());
 }
 
+/**
+ * Destructor for SerialPort. Logs the shutdown process and cleans up resources.
+ */
 SerialPort::~SerialPort() {
     g_print("Shutting down serial port on %s\n", port_.c_str());   
     closePort();
     g_print("Serial port closed\n");
 }
 
+/**
+ * Open and setup the serial port with the object settings.
+ * 
+ * @param error : Pointer the nvgstcapture-1.0 error struct for error reporting
+ * 
+ * @return : -1 on error, otherwise 0.
+ */
 gint SerialPort::setup(GError** error) {
 
     std::string port_id = port_;
@@ -60,26 +83,41 @@ gint SerialPort::setup(GError** error) {
     return ret_val; 
 }
 
+/**
+* This sets the port incomming data handling function. This can be changed as required.
+* 
+* @param func : The data handling function to bind as the write function.
+*/
 void SerialPort::setWriteFunc(std::function<void(const std::string&)> func) {
         writeFunc_ = func;
         write_func_set_ = TRUE;
 }
 
+/**
+* This unsets the port incomming data handling function. Incomming data will be unhandled.
+* 
+* @param func : Any dummy function, this is a work around. Ulitimately we will have a null pointer.
+*/
 void SerialPort::unsetWriteFunc(std::function<void(const std::string&)> func) {
         writeFunc_ = nullptr;
         write_func_set_ = FALSE;
 }
 
+/**
+* This writes charaters for output via the io channel, and thus the port.
+* 
+* @param string_to_send : The string for the port to output.
+* @param error : Pointer the nvgstcapture-1.0 error struct for error reporting
+* @return : -1 on error, otherwise 0.
+*/
 gint SerialPort::sendChars(const std::string& string_to_send, GError** error) {
     gsize bytes_written = 0;
     gssize count;
     std::string string_with_linefeed = string_to_send + static_cast<char>(LINE_FEED);
     GIOStatus status;
 
-    //check io_channel instead or as well as serial_port_fd
-
     //Normally it never happens, but it is better not to segfault ;) 
-    if ((serial_port_fd_ == -1) || (string_to_send.length() == 0)) {// || (io_channel == NULL))
+    if ((serial_port_fd_ == -1) || (string_to_send.length() == 0)) {
 
         g_set_error_literal(error, g_quark_from_static_string("serial device"),1,
         "String length zero, or file descriptor closed");
@@ -105,17 +143,40 @@ gint SerialPort::sendChars(const std::string& string_to_send, GError** error) {
     return bytes_written;
 }
 
+/**
+* Incommming data handling function called from listenPort.
+* 
+* @param output_chars : The string to send to the currently bound data handling function.
+*/
 void SerialPort::writeCharsToFunc(const std::string& output_chars) {
     if ((write_func_set_) && (!output_chars.empty())) {    
         writeFunc_(output_chars);
     }
 }
 
-// Static method
+/**
+ * CALLBACK FUNCTION. Called when data arrives at the port to handle the data. This wrapper reinterprets the
+ * gpointer user_data object into usable pointer for accessing the setup method in the AdditionsParent class.
+ *
+ * @param * src_io_channel : The io channel that received the data
+ * @param cond : Triggered channel condition
+ * @param data : Standard glib function parameter, used to pass a pointer to this AdditionsParent object
+ * 
+ * @return : gboolean value passed through from listenPort
+ */
 gboolean SerialPort::listenPortStatic(GIOChannel* src_io_channel, GIOCondition cond, gpointer data) {
     return reinterpret_cast<SerialPort*>(data)->listenPort(src_io_channel, cond, data);
 }
-    
+
+/**
+ * CLASS METHOD. Called when data arrives at the port to handle the data. We static cast the user_data pointer to access its methods.
+ *
+ * @param * src_io_channel : The io channel that received the data
+ * @param cond : Triggered channel condition
+ * @param data : Standard glib function parameter, used to pass a pointer to this AdditionsParent object
+ *
+ * @return : return TRUE will ensure port keeps listening for Data, return FALSE on Error detection.
+ */
 gboolean SerialPort::listenPort(GIOChannel* src_io_channel, GIOCondition cond, gpointer data) {
     SerialPort* self = static_cast<SerialPort*>(data);
     gsize len = 0;
@@ -135,7 +196,6 @@ gboolean SerialPort::listenPort(GIOChannel* src_io_channel, GIOCondition cond, g
         return FALSE; //KILL THIS OFF HERE AS WE WILL EXIT ON ERROR
     }
 
-
     if(len > 0) {
         self->in_buffer_position_ += len;
 
@@ -154,29 +214,50 @@ gboolean SerialPort::listenPort(GIOChannel* src_io_channel, GIOCondition cond, g
     return TRUE; //ALWAYS RETRUN TRUE TO KEEP THIS ALIVE
 }
 
-// Static method
+/**
+ * CALLBACK FUNCTION. Called when an error occurs in the io channel. This wrapper reinterprets the
+ * gpointer user_data object into usable pointer for accessing the setup method in the AdditionsParent class.
+ *
+ * @param * src : The io channel that received the data
+ * @param cond : Triggered channel condition
+ * @param data : Standard glib function parameter, used to pass a pointer to this AdditionsParent object
+ * 
+ * @return : gboolean value passed through from ioErr
+ */
 gboolean SerialPort::ioErrStatic(GIOChannel* src, GIOCondition cond, gpointer data) {
     return reinterpret_cast<SerialPort*>(data)->ioErr(src, cond, data);
 }
 
+/**
+ * CLASS METHOD. Called when an error occurs in the io channel. We static cast the user_data pointer to access its methods.
+ *
+ * * @param * src : The io channel that received the data
+ * @param cond : Triggered channel condition
+ * @param data : Standard glib function parameter, used to pass a pointer to this AdditionsParent object
+ *
+ * @return : return FALSE will close this channel.
+ */
 gboolean SerialPort::ioErr(GIOChannel* src, GIOCondition cond, gpointer data) {
         SerialPort* self = static_cast<SerialPort*>(data);
 
     self->closePort();
-
-    /*HANDLE ERROR HERE SOMEHOW*/
     return FALSE;
 }
 
+
+
+/**
+* This method configures the serial port for use with the settings theis object was built with.
+* 
+* @param error : Pointer the nvgstcapture-1.0 error struct for error reporting.
+* 
+* @return : -1 on error, else 0.
+*/
 gint SerialPort::configurePort(GError** error) {
     struct termios termios_p;
 
     closePort();
-
-    //serial_port_fd = open(config.port, O_RDWR);
     serial_port_fd_ = open(port_.c_str(), O_RDWR | O_NONBLOCK);
-
-    //g_print("\nSerial port open fd: %d\n", serial_port_fd_);
 
     if(serial_port_fd_ == -1)
     {
@@ -196,12 +277,8 @@ gint SerialPort::configurePort(GError** error) {
         }
     }
 
-    //Still want to fill up termios_p will all the right stuff!
+    //Get the exisiting port settings!
     tcgetattr(serial_port_fd_, &termios_p);
-
-    /*Don't use this functionality*/
-    //memcpy(&termios_save, &termios_p, sizeof(struct termios));
-    //Can use termios_save = termios_p; now in C++.
 
     switch(baud_)
     {
@@ -336,11 +413,6 @@ gint SerialPort::configurePort(GError** error) {
 
     g_io_channel_set_encoding(static_channel,NULL,NULL);
 
-    /**********************************************************************
-    *
-    * What's happening with callback_handler_in and callback_handler_err?
-    * 
-    ***********************************************************************/
     if (static_channel)
     {
         
@@ -380,12 +452,12 @@ gint SerialPort::configurePort(GError** error) {
     }         
         
     callback_activated_ = TRUE;
-
-    //g_print("\nCallback Handler value is: %d\n", (int)callback_handler_in);
-
     return serial_port_fd_;
 }
 
+/**
+* This method closes the serial port and restores its original settings.
+*/
 void SerialPort::closePort() {
     if(serial_port_fd_ != -1)
     {
